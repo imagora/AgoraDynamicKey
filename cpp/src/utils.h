@@ -433,7 +433,7 @@ namespace agora { namespace tools {
 
         char *buf = new char[33];
         for (int i = 0; i < 16; i++)
-            sprintf_s(buf + i * 2, 33 - i * 2, "%02x", digest[i]);
+            snprintf(buf + i * 2, 33 - i * 2, "%02x", digest[i]);
         buf[32] = 0;
 
         return buf;
