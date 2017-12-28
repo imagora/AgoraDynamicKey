@@ -44,7 +44,7 @@ namespace agora { namespace tools {
         template<typename T>
         static void unpack(const std::string& data, T& x)
         {
-            Unpacker u(data.data(), data.length());
+            Unpacker u(data.data(), static_cast<uint16_t>(data.length()));
             u >> x;
         }
 

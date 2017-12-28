@@ -63,28 +63,28 @@ public:
     {
         check_size(sizeof(val), position_);
         ::memcpy(&buffer_[0] + position_, &val, sizeof(val));
-        position_ += sizeof(val);
+        position_ = static_cast<uint16_t>(position_ + sizeof(val));
     }
 
     void push(uint32_t val)
     {
         check_size(sizeof(val), position_);
         ::memcpy(&buffer_[0] + position_, &val, sizeof(val));
-        position_ += sizeof(val);
+        position_ = static_cast<uint16_t>(position_ + sizeof(val));
     }
 
     void push(uint16_t val)
     {
         check_size(sizeof(val), position_);
         ::memcpy(&buffer_[0] + position_, &val, sizeof(val));
-        position_ += sizeof(val);
+        position_ = static_cast<uint16_t>(position_ + sizeof(val));
     }
 
     void push(uint8_t val)
     {
         check_size(sizeof(val), position_);
         ::memcpy(&buffer_[0] + position_, &val, sizeof(val));
-        position_ += sizeof(val);
+        position_ = static_cast<uint16_t>(position_ + sizeof(val));
     }
 
     void push(const std::string & val)
@@ -96,7 +96,7 @@ public:
         if (length > 0)
         {
             ::memcpy(&buffer_[0] + position_, val.data(), length);
-            position_ += length;
+            position_ = static_cast<uint16_t>(position_ + length);
         }
     }
 
@@ -105,7 +105,7 @@ public:
         check_size(length, position_);
         if (length > 0) {
             ::memcpy(&buffer_[0] + position_, data, length);
-            position_ += length;
+            position_ = static_cast<uint16_t>(position_ + length);
         }
         return *this;
     }
@@ -209,7 +209,7 @@ public:
     template<typename K, typename V>
     Packer& operator<< (const std::map<K, V> & v)
     {
-        uint16_t count = v.size();
+        uint16_t count = static_cast<uint16_t>(v.size());
         *this << count;
         for (const typename std::map<K, V>::value_type& x : v) {
             *this << x;
@@ -237,7 +237,7 @@ private:
 class Unpacker
 {
 public:
-    Unpacker(const char* buf, size_t len, bool copy = false)
+    Unpacker(const char* buf, uint16_t len, bool copy = false)
         : buffer_(NULL)
         , length_(len)
         , position_(0)
@@ -276,7 +276,7 @@ public:
         uint64_t v = 0;
         check_size(sizeof(v), position_);
         ::memcpy(&v, buffer_ + position_, sizeof(v));
-        position_ += sizeof(v);
+        position_ = static_cast<uint16_t>(position_ + sizeof(v));
         return v;
     }
 
@@ -284,7 +284,7 @@ public:
         uint32_t v = 0;
         check_size(sizeof(v), position_);
         ::memcpy(&v, buffer_ + position_, sizeof(v));
-        position_ += sizeof(v);
+        position_ = static_cast<uint16_t>(position_ + sizeof(v));
         return v;
     }
 
@@ -292,7 +292,7 @@ public:
         uint16_t v = 0;
         check_size(sizeof(v), position_);
         ::memcpy(&v, buffer_ + position_, sizeof(v));
-        position_ += sizeof(v);
+        position_ = static_cast<uint16_t>(position_ + sizeof(v));
         return v;
     }
 
@@ -300,7 +300,7 @@ public:
         uint8_t v = 0;
         check_size(sizeof(v), position_);
         ::memcpy(&v, buffer_ + position_, sizeof(v));
-        position_ += sizeof(v);
+        position_ = static_cast<uint16_t>(position_ + sizeof(v));
         return v;
     }
 
@@ -308,7 +308,7 @@ public:
         uint16_t length = pop_uint16();
         check_size(length, position_);
         std::string s = std::string(buffer_ + position_, length);
-        position_ += length;
+        position_ = static_cast<uint16_t>(position_ + length);
 
         return s;
     }

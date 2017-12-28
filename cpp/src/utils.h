@@ -50,7 +50,7 @@ namespace agora { namespace tools {
         uint32_t md_len = 0;
         HMAC(EVP_sha1()
             , (const unsigned char*)appCertificate.data()
-            , appCertificate.length()
+            , static_cast<int>(appCertificate.length())
             , (const unsigned char*)message.data()
             , message.length(), &md[0], &md_len);
         return std::string(reinterpret_cast<char *>(md), signSize);
@@ -106,7 +106,7 @@ namespace agora { namespace tools {
         std::string out(count, '\0');
         for (size_t i = 0; i < count; ++i) {
             std::string one = hex.substr(i * 2, 2);
-            out[i] = ::strtol(one.c_str(), 0, 16);
+            out[i] = static_cast<char>(::strtol(one.c_str(), NULL, 16));
         }
         return out;
     }
@@ -129,8 +129,8 @@ namespace agora { namespace tools {
             char_array_3[i++] = *(input++);
             if (i == 3) {
                 char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-                char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-                char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+                char_array_4[1] = static_cast<unsigned char>(((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4));
+                char_array_4[2] = static_cast<unsigned char>(((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6));
                 char_array_4[3] = char_array_3[2] & 0x3f;
 
                 for (i = 0; i < 4; i++)
@@ -144,8 +144,8 @@ namespace agora { namespace tools {
                 char_array_3[j] = '\0';
 
             char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+            char_array_4[1] = static_cast<unsigned char>(((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4));
+            char_array_4[2] = static_cast<unsigned char>(((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6));
             char_array_4[3] = char_array_3[2] & 0x3f;
 
             for (j = 0; j < i + 1; j++)
@@ -181,11 +181,11 @@ namespace agora { namespace tools {
             char_array_4[i++] = input[idx++];
             if (i == 4) {
                 for (i = 0; i < 4; i++)
-                    char_array_4[i] = strchr(base64_chars, char_array_4[i]) - base64_chars;
+                    char_array_4[i] = static_cast<unsigned char>(strchr(base64_chars, char_array_4[i]) - base64_chars);
 
-                char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-                char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-                char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+                char_array_3[0] = static_cast<unsigned char>((char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4));
+                char_array_3[1] = static_cast<unsigned char>(((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2));
+                char_array_3[2] = static_cast<unsigned char>(((char_array_4[2] & 0x3) << 6) + char_array_4[3]);
 
                 for (i = 0; (i < 3); i++)
                     output[r++] = char_array_3[i];
@@ -198,11 +198,11 @@ namespace agora { namespace tools {
                 char_array_4[j] = 0;
 
             for (j = 0; j <4; j++)
-                char_array_4[j] = strchr(base64_chars, char_array_4[j]) - base64_chars;
+                char_array_4[j] = static_cast<unsigned char>(strchr(base64_chars, char_array_4[j]) - base64_chars);
 
-            char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-            char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-            char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+            char_array_3[0] = static_cast<unsigned char>((char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4));
+            char_array_3[1] = static_cast<unsigned char>(((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2));
+            char_array_3[2] = static_cast<unsigned char>(((char_array_4[2] & 0x3) << 6) + char_array_4[3]);
 
             for (j = 0; (j < i - 1); j++)
                 output[r++] = char_array_3[j];
@@ -215,7 +215,7 @@ namespace agora { namespace tools {
 
     inline std::string base64Encode(const std::string& data)
     {
-        char* r = base64_encode((const unsigned char*)data.data(), data.length());
+        char* r = base64_encode((const unsigned char*)data.data(), static_cast<int>(data.length()));
         std::string s(r);
         delete r;
         return s;
@@ -224,7 +224,7 @@ namespace agora { namespace tools {
     inline std::string base64Decode(const std::string& data)
     {
         int length = 0;
-        const unsigned char* r = base64_decode(data.data(), data.length(), &length);
+        const unsigned char* r = base64_decode(data.data(), static_cast<int>(data.length()), &length);
         std::string s((const char*)r, (size_t)length);
         delete r;
         return s;
@@ -279,9 +279,9 @@ namespace agora { namespace tools {
     {
         for (uint32_t i = 0, j = 0; j < len; i++, j += 4) {
             output[j] = input[i] & 0xff;
-            output[j + 1] = (input[i] >> 8) & 0xff;
-            output[j + 2] = (input[i] >> 16) & 0xff;
-            output[j + 3] = (input[i] >> 24) & 0xff;
+            output[j + 1] = static_cast<uint8_t>((input[i] >> 8) & 0xff);
+            output[j + 2] = static_cast<uint8_t>((input[i] >> 16) & 0xff);
+            output[j + 3] = static_cast<uint8_t>((input[i] >> 24) & 0xff);
         }
     }
 
@@ -441,7 +441,7 @@ namespace agora { namespace tools {
 
     inline std::string md5(const std::string &data)
     {
-        char* md5buffer = md5((const unsigned char*)data.data(), data.size());
+        char* md5buffer = md5((const unsigned char*)data.data(), static_cast<int>(data.size()));
         std::string md5Str = md5buffer;
         delete[] md5buffer; md5buffer = nullptr;
 

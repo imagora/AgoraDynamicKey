@@ -37,9 +37,9 @@ namespace agora { namespace tools {
               this->signature = channelKeyString.substr(SIGNATURE_OFFSET, SIGNATURE_LENGTH);
               this->appID = channelKeyString.substr(APP_ID_OFFSET, APP_ID_LENGTH);
               try {
-                  this->unixTs = std::stoul(channelKeyString.substr(UNIX_TS_OFFSET, UNIX_TS_LENGTH), nullptr, 10);
-                  this->randomInt = std::stoul(channelKeyString.substr(RANDOM_INT_OFFSET, RANDOM_INT_LENGTH), nullptr, 16);
-                  this->expiredTs = std::stoul(channelKeyString.substr(EXPIREDTS_INT_OFFSET, UNIX_TS_LENGTH), nullptr, 10);
+                  this->unixTs = static_cast<uint32_t>(std::stoul(channelKeyString.substr(UNIX_TS_OFFSET, UNIX_TS_LENGTH), nullptr, 10));
+                  this->randomInt = static_cast<uint32_t>(std::stoul(channelKeyString.substr(RANDOM_INT_OFFSET, RANDOM_INT_LENGTH), nullptr, 16));
+                  this->expiredTs = static_cast<uint32_t>(std::stoul(channelKeyString.substr(EXPIREDTS_INT_OFFSET, UNIX_TS_LENGTH), nullptr, 10));
               } catch(std::exception& e) {
                   return false;
               }
